@@ -1,0 +1,55 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../services/api';
+
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await login(email, password);
+    if (response.jwt) {
+      localStorage.setItem('token', response.jwt);
+      navigate('/chat');
+    } else {
+      alert('Login failed');
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="card">
+        <h2 className="card-header">Login</h2>
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-control"
+              />
+            </div>
+            <div className="form-group">
+              <label>Password:</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="form-control"
+              />
+            </div>
+            <button type="submit" className="btn btn-primary btn-block">
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
